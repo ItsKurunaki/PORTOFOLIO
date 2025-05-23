@@ -280,36 +280,42 @@ const initPhotoGallery = () => {
     if (categoryButtons.length && photoEvents.length) {
         console.log("Photo gallery initialized with", categoryButtons.length, "buttons and", photoEvents.length, "gallery sections");
         
-        // Initially show all gallery sections
+        // Tampilkan hanya galeri dengan kategori "event" secara default
         photoEvents.forEach(event => {
-            event.classList.remove('hidden');
+            const galleryType = event.getAttribute('data-gallery');
+            if (galleryType === 'event') {
+                event.classList.remove('hidden');
+            } else {
+                event.classList.add('hidden');
+            }
         });
-        
+
+        // Tandai tombol "event" sebagai aktif secara default
+        categoryButtons.forEach(button => {
+            const category = button.getAttribute('data-category');
+            if (category === 'event') {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+
         categoryButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 console.log("Photo category clicked:", button.getAttribute('data-category'));
                 e.preventDefault();
                 
-                // Remove active class from all buttons
                 categoryButtons.forEach(btn => btn.classList.remove('active'));
-                
-                // Add active class to clicked button
                 button.classList.add('active');
                 
                 const category = button.getAttribute('data-category');
                 
                 photoEvents.forEach(event => {
                     const galleryType = event.getAttribute('data-gallery');
-                    console.log("Checking gallery:", galleryType, "against category:", category);
-                    
-                    if (category === 'all') {
+                    if (category === 'all' || galleryType === category) {
                         event.classList.remove('hidden');
                     } else {
-                        if (galleryType === category) {
-                            event.classList.remove('hidden');
-                        } else {
-                            event.classList.add('hidden');
-                        }
+                        event.classList.add('hidden');
                     }
                 });
             });
